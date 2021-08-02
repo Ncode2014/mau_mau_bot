@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -25,7 +24,7 @@ from datetime import datetime
 from deck import Deck
 import card as c
 
-class Game(object):
+class Game:
     """ This class represents a game of UNO """
     current_player = None
     reversed = False
@@ -51,7 +50,7 @@ class Game(object):
     @property
     def players(self):
         """Returns a list of all players in this game"""
-        players = list()
+        players = []
         if not self.current_player:
             return players
 
@@ -64,7 +63,7 @@ class Game(object):
         return players
 
     def start(self):
-        if self.mode == None or self.mode != "wild":
+        if self.mode is None or self.mode != "wild":
             self.deck._fill_classic_()
         else:
             self.deck._fill_wild_()

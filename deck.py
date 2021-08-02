@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -26,12 +25,12 @@ from card import Card
 from errors import DeckEmptyError
 
 
-class Deck(object):
+class Deck:
     """ This class represents a deck of cards """
 
     def __init__(self):
         self.cards = list()
-        self.graveyard = list()
+        self.graveyard = []
         self.logger = logging.getLogger(__name__)
 
         self.logger.debug(self.cards)
@@ -48,13 +47,13 @@ class Deck(object):
             self.logger.debug("Drawing card " + str(card))
             return card
         except IndexError:
-            if len(self.graveyard):
-                while len(self.graveyard):
-                    self.cards.append(self.graveyard.pop())
-                self.shuffle()
-                return self.draw()
-            else:
+            if not len(self.graveyard):
                 raise DeckEmptyError()
+
+            while len(self.graveyard):
+                self.cards.append(self.graveyard.pop())
+            self.shuffle()
+            return self.draw()
 
     def dismiss(self, card):
         """Returns a card to the deck"""
@@ -68,7 +67,7 @@ class Deck(object):
         for color in c.COLORS:
             for value in c.VALUES:
                 self.cards.append(Card(color, value))
-                if not value == c.ZERO:
+                if value != c.ZERO:
                     self.cards.append(Card(color, value))
         for special in c.SPECIALS:
             for _ in range(4):

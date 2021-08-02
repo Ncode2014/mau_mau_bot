@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -30,7 +29,7 @@ GETTEXT_DOMAIN = 'unobot'
 GETTEXT_DIR = 'locales'
 
 
-class _Underscore(object):
+class _Underscore:
     """Class to emulate flufl.i18n behaviour, but with plural support"""
     def __init__(self):
         self.translators = {
@@ -43,7 +42,7 @@ class _Underscore(object):
             in available_locales.keys()
             if locale != 'en_US'  # No translation file for en_US
         }
-        self.locale_stack = list()
+        self.locale_stack = []
 
     def push(self, locale):
         self.locale_stack.append(locale)
@@ -66,7 +65,7 @@ class _Underscore(object):
             locale = self.locale_stack[-1]
 
         if locale not in self.translators.keys():
-            if n is 1:
+            if n == 1:
                 return singular
             else:
                 return plural
@@ -83,7 +82,7 @@ _ = _Underscore()
 
 def __(singular, plural=None, n=1, multi=False):
     """Translates text into all locales on the stack"""
-    translations = list()
+    translations = []
 
     if not multi and len(set(_.locale_stack)) >= 1:
         translations.append(_(singular, plural, n, 'en_US'))
@@ -124,9 +123,9 @@ def game_locales(func):
     def wrapped(bot, update, *pargs, **kwargs):
         user, chat = _user_chat_from_update(update)
         player = gm.player_for_user_in_chat(user, chat)
-        locales = list()
-
         if player:
+            locales = []
+
             for player in player.game.players:
                 us = UserSetting.get(id=player.user.id)
 

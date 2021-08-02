@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -134,7 +133,7 @@ class Test(unittest.TestCase):
                    c.Card(None, None, c.DRAW_FOUR),
                    c.Card(None, None, c.CHOOSE)]
 
-        expected = list()
+        expected = []
 
         self.assertListEqual(p.playable_cards(), expected)
 

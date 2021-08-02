@@ -3,7 +3,7 @@
 
 import time
 
-class MWT(object):
+class MWT:
     """Memoize With Timeout"""
     _caches = {}
     _timeouts = {}
@@ -14,10 +14,13 @@ class MWT(object):
     def collect(self):
         """Clear cache of results which have timed out"""
         for func in self._caches:
-            cache = {}
-            for key in self._caches[func]:
-                if (time.time() - self._caches[func][key][1]) < self._timeouts[func]:
-                    cache[key] = self._caches[func][key]
+            cache = {
+                key: self._caches[func][key]
+                for key in self._caches[func]
+                if (time.time() - self._caches[func][key][1])
+                < self._timeouts[func]
+            }
+
             self._caches[func] = cache
 
     def __call__(self, f):

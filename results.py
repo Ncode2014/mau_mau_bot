@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -50,11 +49,13 @@ def add_other_cards(player, results, game):
     results.append(
         InlineQueryResultArticle(
             "hand",
-            title=_("Card (tap for game state):",
-                    "Cards (tap for game state):",
-                    len(player.cards)),
-            description=', '.join([repr(card) for card in player.cards]),
-            input_message_content=game_info(game)
+            title=_(
+                "Card (tap for game state):",
+                "Cards (tap for game state):",
+                len(player.cards),
+            ),
+            description=', '.join(repr(card) for card in player.cards),
+            input_message_content=game_info(game),
         )
     )
 

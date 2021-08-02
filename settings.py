@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -84,11 +83,11 @@ def kb_select(bot, update, groups):
 
 @user_locale
 def locale_select(bot, update, groups):
-    chat = update.message.chat
-    user = update.message.from_user
     option = groups[0]
 
     if option in available_locales:
+        chat = update.message.chat
+        user = update.message.from_user
         us = UserSetting.get(id=user.id)
         us.lang = option
         _.push(option)

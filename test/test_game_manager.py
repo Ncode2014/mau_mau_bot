@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -74,11 +73,7 @@ class Test(unittest.TestCase):
                           *(self.user1, self.chat0))
 
     def test_leave_game(self):
-        self.gm.new_game(self.chat0)
-
-        self.gm.join_game(self.user0, self.chat0)
-        self.gm.join_game(self.user1, self.chat0)
-
+        self._extracted_from_test_end_game_2()
         self.assertRaises(NotEnoughPlayersError,
                           self.gm.leave_game,
                           *(self.user1, self.chat0))
@@ -91,11 +86,7 @@ class Test(unittest.TestCase):
                           *(self.user0, self.chat0))
 
     def test_end_game(self):
-        self.gm.new_game(self.chat0)
-
-        self.gm.join_game(self.user0, self.chat0)
-        self.gm.join_game(self.user1, self.chat0)
-
+        self._extracted_from_test_end_game_2()
         self.assertEqual(len(self.gm.userid_players[0]), 1)
 
         self.gm.new_game(self.chat0)
@@ -109,3 +100,8 @@ class Test(unittest.TestCase):
         self.assertFalse(0 in self.gm.userid_players)
         self.assertFalse(1 in self.gm.userid_players)
         self.assertFalse(2 in self.gm.userid_players)
+
+    def _extracted_from_test_end_game_2(self):
+        self.gm.new_game(self.chat0)
+        self.gm.join_game(self.user0, self.chat0)
+        self.gm.join_game(self.user1, self.chat0)

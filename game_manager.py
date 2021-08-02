@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -26,14 +25,14 @@ from errors import (AlreadyJoinedError, LobbyClosedError, NoGameInChatError,
                     NotEnoughPlayersError)
 
 
-class GameManager(object):
+class GameManager:
     """ Manages all running games by using a confusing amount of dicts """
 
     def __init__(self):
         self.chatid_games = dict()
-        self.userid_players = dict()
-        self.userid_current = dict()
-        self.remind_dict = dict()
+        self.userid_players = {}
+        self.userid_current = {}
+        self.remind_dict = {}
 
         self.logger = logging.getLogger(__name__)
 
@@ -47,7 +46,7 @@ class GameManager(object):
         game = Game(chat)
 
         if chat_id not in self.chatid_games:
-            self.chatid_games[chat_id] = list()
+            self.chatid_games[chat_id] = []
 
         # remove old games
         for g in list(self.chatid_games[chat_id]):
@@ -88,7 +87,7 @@ class GameManager(object):
             self.end_game(chat, user)
 
             if user.id not in self.userid_players:
-                self.userid_players[user.id] = list()
+                self.userid_players[user.id] = []
 
             players = self.userid_players[user.id]
 

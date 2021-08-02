@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -26,7 +25,7 @@ from errors import DeckEmptyError
 from config import WAITING_TIME
 
 
-class Player(object):
+class Player:
     """
     This class represents a player.
     It is basically a doubly-linked ring list with the option to reverse the
@@ -35,7 +34,7 @@ class Player(object):
     """
 
     def __init__(self, game, user):
-        self.cards = list()
+        self.cards = []
         self.game = game
         self.user = user
         self.logger = logging.getLogger(__name__)
@@ -80,7 +79,7 @@ class Player(object):
         for card in self.cards:
             self.game.deck.dismiss(card)
 
-        self.cards = list()
+        self.cards = []
 
     def __repr__(self):
         return repr(self.user)
@@ -133,7 +132,7 @@ class Player(object):
     def playable_cards(self):
         """Returns a list of the cards this player can play right now"""
 
-        playable = list()
+        playable = []
         last = self.game.last_card
 
         self.logger.debug("Last card was " + str(last))
@@ -175,8 +174,10 @@ class Player(object):
         elif last.special == c.DRAW_FOUR and self.game.draw_counter:
             self.logger.debug("Player has to draw and can't counter")
             is_playable = False
-        elif (last.special == c.CHOOSE or last.special == c.DRAW_FOUR) and \
-                (card.special == c.CHOOSE or card.special == c.DRAW_FOUR):
+        elif last.special in [c.CHOOSE, c.DRAW_FOUR] and card.special in [
+            c.CHOOSE,
+            c.DRAW_FOUR,
+        ]:
             self.logger.debug("Can't play colorchooser on another one")
             is_playable = False
         elif not last.color:

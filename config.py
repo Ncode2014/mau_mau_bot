@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -20,7 +19,7 @@
 
 import json
 
-with open("config.json","r") as f:
+with open("config.json") as f:
     config = json.loads(f.read())
 
 TOKEN=config.get("token")

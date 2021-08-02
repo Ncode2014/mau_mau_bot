@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -116,7 +115,7 @@ def stats(bot, update):
                    text=_("You did not enable statistics. Use /settings in "
                           "a private chat with the bot to enable them."))
     else:
-        stats_text = list()
+        stats_text = []
 
         n = us.games_played
         stats_text.append(

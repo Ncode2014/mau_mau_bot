@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Telegram bot to play UNO in group chats
 # Copyright (c) 2016 Jannes Höke <uno@jhoeke.de>
@@ -250,19 +249,19 @@ def kick_player(bot, update):
                 gm.leave_game(kicked, chat)
 
             except NoGameInChatError:
-                send_async(bot, chat.id, text=_("Player {name} is not found in the current game.".format(name=display_name(kicked))),
+                send_async(bot, chat.id, text=_(f"Player {display_name(kicked)} is not found in the current game."),
                                 reply_to_message_id=update.message.message_id)
                 return
 
             except NotEnoughPlayersError:
                 gm.end_game(chat, user)
                 send_async(bot, chat.id,
-                                text=_("{0} was kicked by {1}".format(display_name(kicked), display_name(user))))
+                                text=_(f"{display_name(kicked)} was kicked by {display_name(user)}"))
                 send_async(bot, chat.id, text=__("Game ended!", multi=game.translate))
                 return
 
             send_async(bot, chat.id,
-                            text=_("{0} was kicked by {1}".format(display_name(kicked), display_name(user))))
+                            text=_(f"{display_name(kicked)} was kicked by {display_name(user)}"))
 
         else:
             send_async(bot, chat.id,
@@ -324,10 +323,10 @@ def select_game(bot, update):
 @game_locales
 def status_update(bot, update):
     """Remove player from game if user leaves the group"""
-    chat = update.message.chat
-
     if update.message.left_chat_member:
         user = update.message.left_chat_member
+
+        chat = update.message.chat
 
         try:
             gm.leave_game(user, chat)
@@ -440,14 +439,13 @@ def close_game(bot, update):
         game.open = False
         send_async(bot, chat.id, text=_("Closed the lobby. "
                                         "No more players can join this game."))
-        return
-
     else:
         send_async(bot, chat.id,
                    text=_("Only the game creator ({name}) and admin can do that.")
                    .format(name=game.starter.first_name),
                    reply_to_message_id=update.message.message_id)
-        return
+
+    return
 
 
 @user_locale
@@ -468,13 +466,13 @@ def open_game(bot, update):
         game.open = True
         send_async(bot, chat.id, text=_("Opened the lobby. "
                                         "New players may /join the game."))
-        return
     else:
         send_async(bot, chat.id,
                    text=_("Only the game creator ({name}) and admin can do that.")
                    .format(name=game.starter.first_name),
                    reply_to_message_id=update.message.message_id)
-        return
+
+    return
 
 
 @user_locale
@@ -495,14 +493,13 @@ def enable_translations(bot, update):
         game.translate = True
         send_async(bot, chat.id, text=_("Enabled multi-translations. "
                                         "Disable with /disable_translations"))
-        return
-
     else:
         send_async(bot, chat.id,
                    text=_("Only the game creator ({name}) and admin can do that.")
                    .format(name=game.starter.first_name),
                    reply_to_message_id=update.message.message_id)
-        return
+
+    return
 
 
 @user_locale
@@ -524,14 +521,13 @@ def disable_translations(bot, update):
         send_async(bot, chat.id, text=_("Disabled multi-translations. "
                                         "Enable them again with "
                                         "/enable_translations"))
-        return
-
     else:
         send_async(bot, chat.id,
                    text=_("Only the game creator ({name}) and admin can do that.")
                    .format(name=game.starter.first_name),
                    reply_to_message_id=update.message.message_id)
-        return
+
+    return
 
 
 @game_locales
@@ -570,12 +566,12 @@ def skip_player(bot, update):
 
 @game_locales
 @user_locale
-def reply_to_query(bot, update):
+def reply_to_query(bot, update):  # sourcery no-metrics
     """
     Handler for inline queries.
     Builds the result list for inline queries and answers to the client.
     """
-    results = list()
+    results = []
     switch = None
 
     try:
@@ -615,7 +611,7 @@ def reply_to_query(bot, update):
                     add_call_bluff(results, game)
 
                 playable = player.playable_cards()
-                added_ids = list()  # Duplicates are not allowed
+                added_ids = []
 
                 for card in sorted(player.cards):
                     add_card(game, card, results,
@@ -625,12 +621,9 @@ def reply_to_query(bot, update):
 
                 add_gameinfo(game, results)
 
-        elif user_id != game.current_player.user.id or not game.started:
+        else:
             for card in sorted(player.cards):
                 add_card(game, card, results, can_play=False)
-
-        else:
-            add_gameinfo(game, results)
 
         for result in results:
             result.id += ':%d' % player.anti_cheat
@@ -670,8 +663,8 @@ def process_result(bot, update, job_queue):
         # First 5 characters are 'mode_', the rest is the gamemode.
         mode = result_id[5:]
         game.set_mode(mode)
-        logger.info("Gamemode changed to {mode}".format(mode = mode))
-        send_async(bot, chat.id, text=__("Gamemode changed to {mode}".format(mode = mode)))
+        logger.info(f"Gamemode changed to {mode}")
+        send_async(bot, chat.id, text=__(f"Gamemode changed to {mode}"))
         return
     elif len(result_id) == 36:  # UUID result
         return
@@ -707,10 +700,10 @@ def process_result(bot, update, job_queue):
 
 def reset_waiting_time(bot, player):
     """Resets waiting time for a player and sends a notice to the group"""
-    chat = player.game.chat
-
     if player.waiting_time < WAITING_TIME:
         player.waiting_time = WAITING_TIME
+        chat = player.game.chat
+
         send_async(bot, chat.id,
                    text=__("Waiting time for {name} has been reset to {time} "
                            "seconds", multi=player.game.translate)

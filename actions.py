@@ -16,7 +16,7 @@ from utils import send_async, display_name, game_is_running
 
 logger = logging.getLogger(__name__)
 
-class Countdown(object):
+class Countdown:
     player = None
     job_queue = None
 
@@ -35,9 +35,7 @@ def do_skip(bot, player, job_queue=None):
     if skipped_player.waiting_time > 0:
         skipped_player.anti_cheat += 1
         skipped_player.waiting_time -= TIME_REMOVAL_AFTER_SKIP
-        if (skipped_player.waiting_time < 0):
-            skipped_player.waiting_time = 0
-
+        skipped_player.waiting_time = max(skipped_player.waiting_time, 0)
         try:
             skipped_player.draw()
         except DeckEmptyError:
@@ -111,7 +109,7 @@ def do_play_card(bot, player, result_id):
         if us.stats:
             us.games_played += 1
 
-            if game.players_won is 0:
+            if game.players_won == 0:
                 us.first_places += 1
 
         game.players_won += 1
@@ -186,9 +184,7 @@ def start_player_countdown(bot, game, job_queue):
     player = game.current_player
     time = player.waiting_time
 
-    if time < MIN_FAST_TURN_TIME:
-        time = MIN_FAST_TURN_TIME
-
+    time = max(time, MIN_FAST_TURN_TIME)
     if game.mode == 'fast':
         if game.job:
             game.job.schedule_removal()
